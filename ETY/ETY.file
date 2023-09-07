@@ -1,0 +1,46 @@
+SELECT (
+    SELECT t4."SubCategoryName"
+    FROM "LenzDailyData" AS l1
+    INNER JOIN (
+        SELECT b1."EquipmentId", b1."Active", b1."CompanyId", b1."Created", b1."CreatedBy", b1."Description", b1."DeviceId", b1."EquipmentCode", b1."Hierarchyid", b1."Label1", b1."Label2", b1."Label3", b1."Label4", b1."Label5", b1."LastModified", b1."LastModifiedBy", b1."Latitude", b1."Location", b1."Longitude", b1."ModelId", b1."SiteId", b1."SubCategoryId", e1."AmpereRating", e1."BaudRate", e1."BreakingCapacity", e1."Capacity", e1."CommandString", e1."HierarchyPath", e1."IsBBTempMonitored", e1."IsBSConnected", e1."IsCalculation", e1."IsGenset", e1."IsLMConnected", e1."IsVirtualMeter", e1."LenzEquipmentType", e1."LowLoadConsumption", e1."MeterNo", e1."MeterType", e1."ParentEquipmentHierarchyID", e1."Parity", e1."RatedLoading", e1."RatedPower", e1."SlaveID", e1."StopBit", e1."TankCapacity", e1."TankSize", e1."TypeOfBreaker"
+        FROM "BaseEquipment" AS b1
+        INNER JOIN "EquipmentHierarchy" AS e1 ON b1."EquipmentId" = e1."EquipmentId"
+        WHERE b1."CompanyId" = @__ef_filter___currentCompanyID_1
+    ) AS t3 ON l1."EquipmentId" = t3."EquipmentId"
+    INNER JOIN (
+        SELECT s1."SubCategoryId", s1."CompanyId", s1."Created", s1."CreatedBy", s1."ImageUrl", s1."LastModified", s1."LastModifiedBy", s1."ProductCategoryID", s1."SubCategoryCode", s1."SubCategoryName"
+        FROM "SubCategory" AS s1
+        WHERE s1."CompanyId" = @__ef_filter___currentCompanyID_2
+    ) AS t4 ON t3."SubCategoryId" = t4."SubCategoryId"
+    WHERE ((l1."CompanyId" = @__ef_filter___currentCompanyID_0) AND ((((t3."CompanyId" = @__8__locals2_CompanyId_0) AND (date_trunc('day', l1."Date") = date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days'))) AND (t4."SubCategoryCode" = ANY (@__myInClause_1) OR (t4."SubCategoryCode" IS NULL AND array_position(@__myInClause_1, NULL) IS NOT NULL))) AND (t3."MeterType" = 1))) AND (((date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days') = date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days')) OR ((now() AT TIME ZONE 'UTC' IS NULL OR INTERVAL '-1 days' IS NULL) AND (now() AT TIME ZONE 'UTC' IS NULL OR INTERVAL '-1 days' IS NULL))) AND (t."SubCategoryId" = t3."SubCategoryId"))
+    LIMIT 1), COALESCE(SUM(l."TotalKwH"), 0.0)
+FROM "LenzDailyData" AS l
+INNER JOIN (
+    SELECT b."EquipmentId", b."CompanyId", b."SubCategoryId", e."MeterType"
+    FROM "BaseEquipment" AS b
+    INNER JOIN "EquipmentHierarchy" AS e ON b."EquipmentId" = e."EquipmentId"
+    WHERE b."CompanyId" = @__ef_filter___currentCompanyID_1
+) AS t ON l."EquipmentId" = t."EquipmentId"
+INNER JOIN (
+    SELECT s."SubCategoryId", s."SubCategoryCode"
+    FROM "SubCategory" AS s
+    WHERE s."CompanyId" = @__ef_filter___currentCompanyID_2
+) AS t0 ON t."SubCategoryId" = t0."SubCategoryId"
+WHERE (l."CompanyId" = @__ef_filter___currentCompanyID_0) AND ((((t."CompanyId" = @__8__locals2_CompanyId_0) AND (date_trunc('day', l."Date") = date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days'))) AND (t0."SubCategoryCode" = ANY (@__myInClause_1) OR (t0."SubCategoryCode" IS NULL AND array_position(@__myInClause_1, NULL) IS NOT NULL))) AND (t."MeterType" = 1))
+GROUP BY date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days'), t."SubCategoryId"
+ORDER BY (
+    SELECT t4."SubCategoryName"
+    FROM "LenzDailyData" AS l1
+    INNER JOIN (
+        SELECT b1."EquipmentId", b1."Active", b1."CompanyId", b1."Created", b1."CreatedBy", b1."Description", b1."DeviceId", b1."EquipmentCode", b1."Hierarchyid", b1."Label1", b1."Label2", b1."Label3", b1."Label4", b1."Label5", b1."LastModified", b1."LastModifiedBy", b1."Latitude", b1."Location", b1."Longitude", b1."ModelId", b1."SiteId", b1."SubCategoryId", e1."AmpereRating", e1."BaudRate", e1."BreakingCapacity", e1."Capacity", e1."CommandString", e1."HierarchyPath", e1."IsBBTempMonitored", e1."IsBSConnected", e1."IsCalculation", e1."IsGenset", e1."IsLMConnected", e1."IsVirtualMeter", e1."LenzEquipmentType", e1."LowLoadConsumption", e1."MeterNo", e1."MeterType", e1."ParentEquipmentHierarchyID", e1."Parity", e1."RatedLoading", e1."RatedPower", e1."SlaveID", e1."StopBit", e1."TankCapacity", e1."TankSize", e1."TypeOfBreaker"
+        FROM "BaseEquipment" AS b1
+        INNER JOIN "EquipmentHierarchy" AS e1 ON b1."EquipmentId" = e1."EquipmentId"
+        WHERE b1."CompanyId" = @__ef_filter___currentCompanyID_1
+    ) AS t3 ON l1."EquipmentId" = t3."EquipmentId"
+    INNER JOIN (
+        SELECT s1."SubCategoryId", s1."CompanyId", s1."Created", s1."CreatedBy", s1."ImageUrl", s1."LastModified", s1."LastModifiedBy", s1."ProductCategoryID", s1."SubCategoryCode", s1."SubCategoryName"
+        FROM "SubCategory" AS s1
+        WHERE s1."CompanyId" = @__ef_filter___currentCompanyID_2
+    ) AS t4 ON t3."SubCategoryId" = t4."SubCategoryId"
+    WHERE ((l1."CompanyId" = @__ef_filter___currentCompanyID_0) AND ((((t3."CompanyId" = @__8__locals2_CompanyId_0) AND (date_trunc('day', l1."Date") = date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days'))) AND (t4."SubCategoryCode" = ANY (@__myInClause_1) OR (t4."SubCategoryCode" IS NULL AND array_position(@__myInClause_1, NULL) IS NOT NULL))) AND (t3."MeterType" = 1))) AND (((date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days') = date_trunc('day', now() AT TIME ZONE 'UTC' + INTERVAL '-1 days')) OR ((now() AT TIME ZONE 'UTC' IS NULL OR INTERVAL '-1 days' IS NULL) AND (now() AT TIME ZONE 'UTC' IS NULL OR INTERVAL '-1 days' IS NULL))) AND (t."SubCategoryId" = t3."SubCategoryId"))
+    LIMIT 1)
